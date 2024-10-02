@@ -2,7 +2,7 @@ name: Pull Request Workflow
 
 on:
   pull_request:
-    types: [opened, synchronize, reopened]  # PR이 열릴 때, 업데이트될 때, 다시 열릴 때 트리거
+    types: [opened, synchronize, reopened, closed]  # PR이 열릴 때, 업데이트될 때, 다시 열릴 때, 닫힐 때 트리거
 
 jobs:
   check-pr-events:
@@ -23,3 +23,7 @@ jobs:
       - name: Check if PR is reopened  # PR이 다시 열렸을 때
         if: github.event.action == 'reopened'
         run: echo "PR reopened event is working correctly!"
+
+      - name: Check if PR is closed  # PR이 닫혔을 때
+        if: github.event.action == 'closed'
+        run: echo "PR closed event is working correctly!"
