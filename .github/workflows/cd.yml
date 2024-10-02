@@ -3,10 +3,10 @@ name: CI/CD Workflow
 on:
   push:
     branches:
-      - park  # "park" 브랜치에 푸시가 될 때 트리거
+      - park
   pull_request:
     branches:
-      - park  # "park" 브랜치로 PR이 생성되거나 업데이트될 때 트리거
+      - park
 
 jobs:
   deploy:
@@ -25,7 +25,6 @@ jobs:
             mkdir -p /home/ubuntu/${{ github.event.repository.name }}
             cd /home/ubuntu/${{ github.event.repository.name }}
             git pull origin park
-            # 추가 작업(빌드, 설치 등)을 이곳에 추가할 수 있습니다.
 
   test:
     runs-on: ubuntu-latest
@@ -33,13 +32,15 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Set up Node.js  # Node.js 환경 설정 추가
+      - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '16'  # Node.js 버전을 설정
+          node-version: '16'
 
       - name: Install dependencies
         run: npm install
+        working-directory: ./  # 올바른 경로 설정
 
       - name: Run tests
         run: npm test
+        working-directory: ./  # 테스트를 올바른 경로에서 실행
