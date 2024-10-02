@@ -1,0 +1,24 @@
+name: CD Workflow
+
+on:
+  push:
+    branches: [ "park" ]  # "park" 브랜치에 푸시가 될 때만 실행되도록 설정
+
+jobs:
+  SSH:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Run scripts in server
+        uses: appleboy/ssh-action@master
+        with:
+          key: ${{ secrets.SSH_KEY }}    # SSH 개인 키
+          host: ${{ secrets.HOST_KEY }}       # EC2 퍼블릭 IP
+          username: ${{ secrets.USER }}   # 사용자 이름
+          script: |
+            mkdir -p /home/ubuntu/${{ github.event.repository.name }}    # 리포지토리 폴더 만들기
+            cd /home/ubuntu/${{ github.event.repository.name }}          # 폴더로 이동
+            git pull origin park                                         # "park" 브랜치에서 최신 코드 가져오기
+            # 추가 작업(빌드, 설치 등)을 이곳에 추가할 수 있습니다.
