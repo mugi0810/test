@@ -1,46 +1,17 @@
-name: CI/CD Workflow
+name: Simple Pull Request Workflow
 
+# 워크플로우 트리거 설정 (pull_request 이벤트)
 on:
-  push:
-    branches:
-      - park
   pull_request:
-    branches:
-      - park
+    types: [opened, synchronize, reopened]  # PR이 열릴 때, 업데이트될 때, 다시 열릴 때 실행
 
 jobs:
-  deploy:
-    runs-on: ubuntu-latest
+  notify:
+    runs-on: ubuntu-latest  # Ubuntu 환경에서 실행
+
     steps:
-      - name: Checkout code
+      - name: Checkout code  # 리포지토리 코드 가져오기
         uses: actions/checkout@v3
 
-      - name: Run scripts in server
-        uses: appleboy/ssh-action@master
-        with:
-          key: ${{ secrets.SSH_KEY }}
-          host: ${{ secrets.HOST_KEY }}
-          username: ${{ secrets.USER }}
-          script: |
-            mkdir -p /home/ubuntu/${{ github.event.repository.name }}
-            cd /home/ubuntu/${{ github.event.repository.name }}
-            git pull origin park
-
-  test:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: '16'
-
-      - name: Install dependencies
-        run: npm install
-        working-directory: ./  # 올바른 경로 설정
-
-      - name: Run tests
-        run: npm test
-        working-directory: ./  # 테스트를 올바른 경로에서 실행
+      - name: Display message  # 간단한 메시지 출력
+        run: echo "Pull Request Workflow is working correctly!"
