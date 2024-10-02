@@ -10,9 +10,8 @@ on:
 
 jobs:
   deploy:
-    if: github.event_name == 'push'  # 이 job은 push 이벤트에만 실행
+    # if 조건을 제거하고, push 이벤트에서만 실행
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -20,19 +19,18 @@ jobs:
       - name: Run scripts in server
         uses: appleboy/ssh-action@master
         with:
-          key: ${{ secrets.SSH_KEY }}    # SSH 개인 키
-          host: ${{ secrets.HOST_KEY }}       # EC2 퍼블릭 IP
-          username: ${{ secrets.USER }}   # 사용자 이름
+          key: ${{ secrets.SSH_KEY }}
+          host: ${{ secrets.HOST_KEY }}
+          username: ${{ secrets.USER }}
           script: |
-            mkdir -p /home/ubuntu/${{ github.event.repository.name }}    # 리포지토리 폴더 만들기
-            cd /home/ubuntu/${{ github.event.repository.name }}          # 폴더로 이동
-            git pull origin park                                         # "park" 브랜치에서 최신 코드 가져오기
+            mkdir -p /home/ubuntu/${{ github.event.repository.name }}
+            cd /home/ubuntu/${{ github.event.repository.name }}
+            git pull origin park
             # 추가 작업(빌드, 설치 등)을 이곳에 추가할 수 있습니다.
 
   test:
-    if: github.event_name == 'pull_request'  # 이 job은 pull_request 이벤트에만 실행
+    # if 조건을 제거하고, pull_request 이벤트에서만 실행
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -46,4 +44,4 @@ jobs:
         run: npm install
 
       - name: Run tests
-        run: npm test  # 여기서 문제가 발생한 것 같음. 명확하게 닫아주어야 함.
+        run: npm test
